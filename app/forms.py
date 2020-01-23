@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import Form
-from wtforms import IntegerField, StringField, FormField, DateField, TextAreaField
+from wtforms import IntegerField, StringField, \
+    FormField, DateField, TextAreaField
 from wtforms.validators import DataRequired
 
 
@@ -28,7 +29,6 @@ class LineItemForm(FlaskForm):
     quantity = IntegerField('Quantity', validators=[DataRequired()])
     amount = IntegerField('Amount', validators=[DataRequired()])
     additional_details = TextAreaField('Additional details')
-
 
 
 class ReceiptForm(FlaskForm):
