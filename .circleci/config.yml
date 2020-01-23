@@ -47,4 +47,4 @@ workflows:
   my-workflow:
     jobs:
       - build:
-          context: receipt-app
+          context: receipt-app-staging
