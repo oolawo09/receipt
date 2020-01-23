@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import Form
-from wtforms import IntegerField, StringField, FormField, DateField
+from wtforms import IntegerField, StringField, FormField, DateField, TextAreaField
 from wtforms.validators import DataRequired
 
 
@@ -20,6 +20,16 @@ class ContactDetailsForm(FlaskForm):
 class OrderDetailsForm(FlaskForm):
     number = IntegerField('Number', validators=[DataRequired])
     date = DateField('Date', validators=[DataRequired])
+
+
+class LineItemForm(FlaskForm):
+    description = StringField('Description', validators=[DataRequired()])
+    rate = IntegerField('Rate', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    amount = IntegerField('Amount', validators=[DataRequired()])
+    additional_details = TextAreaField('Additional details')
+
+
 
 class ReceiptForm(FlaskForm):
     sender_details = FormField(ContactDetailsForm)
