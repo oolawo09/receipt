@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content%}
+    <style>
+        /*Large and medium screens*/
+        .container{
+            display: flex; 
+            flex-flow: row wrap;
+            justify-content: space-evenly;
+        }
+
+        /* Medium screens */
+        @media all and (max-width: 500px) {
+        .container {
+        /* When on medium sized screens, we center it by evenly distributing empty space around items */
+            flex-direction: column;
+        }
+    </style>
+    <div class="container">
+        <div>
+            <h1>From</h1>
+            <sender_form action="" method="POST" novalidate>
+                {{ sender_form.hidden_tag() }}
+                <p>
+                    {{ sender_form.name.label }}<br>
+                    {{ sender_form.name(size=32) }}
+                </p>
+                <p>
+                    {{ sender_form.address.label }}<br>
+                    {{ sender_form.address(size=32) }}
+                </p>
+                <p>
+                    {{ sender_form.email.label }}<br>
+                    {{ sender_form.email(size=32) }}
+                </p>
+                <p>
+                    {{ sender_form.phone.label }}<br>
+                    {{ sender_form.phone(size=32) }}
+                </p>
+            </sender_form>
+        </div>
+        <div>
+            <h1>To</h1>
+            <recipient_form action="" method="POST" novalidate>
+                {{ recipient_form.hidden_tag() }}
+                <p>
+                    {{ recipient_form.name.label }}<br>
+                    {{ recipient_form.name(size=32) }}
+                </p>
+                <p>
+                    {{ recipient_form.address.label }}<br>
+                    {{ recipient_form.address(size=32) }}
+                </p>
+                <p>
+                    {{ recipient_form.email.label }}<br>
+                    {{ recipient_form.email(size=32) }}
+                </p>
+                <p>
+                    {{ recipient_form.phone.label }}<br>
+                    {{ recipient_form.phone(size=32) }}
+                </p>
+            </recipient_form>
+        </div>
+    </div>
+    <div class="container">
+        <div>
+            <h1>Order details</h1>
+            <p>
+                {{order_details_form.number.label}}</br>
+                {{order_details_form.number(size=32)}} 
+            </p>
+            <p>
+                {{order_details_form.date.label}}</br>
+                {{order_details_form.date(size=32)}} 
+            </p>
+        </div>
+    </div>
+{% endblock %}
