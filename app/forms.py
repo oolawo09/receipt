@@ -19,8 +19,8 @@ class ContactDetailsForm(FlaskForm):
 
 
 class OrderDetailsForm(FlaskForm):
-    number = IntegerField('Number', validators=[DataRequired])
-    date = DateField('Date', validators=[DataRequired])
+    number = IntegerField('Number', validators=[DataRequired()])
+    date = DateField('Date', validators=[DataRequired()])
 
 
 class LineItemForm(FlaskForm):
