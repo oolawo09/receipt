@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+            <h1>{{user}}</h1>
+            <form class="form form-horizontal" action="{{url_for('preview')}}" method="POST" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.sender.label }}<br>
+                    {{ form.sender(size=32) }}<br>
+                    {% for error in form.sender.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.recipient.label }}<br>
+                    {{ form.recipient(size=32) }}<br>
+                    {% for error in form.recipient.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.items.label }}<br>
+                    {{ form.items(size=32) }}<br>
+                    {% for error in form.items.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.notes.label }}<br>
+                    {{ form.notes(size=32) }}<br>
+                    {% for error in form.notes.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <input type="submit" value="next">
+            </form>
+    
+{% endblock %}
