@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content%}
+            <h1>{{user}}</h1>
+            <form action="{{url_for('show_order_details_form')}}" method="POST" novalidate>
+                {{ contact_form.hidden_tag() }}
+                <p>
+                    {{ contact_form.name.label }}<br>
+                    {{ contact_form.name(size=32) }}
+                </p>
+                <p>
+                    {{ contact_form.address.label }}<br>
+                    {{ contact_form.address(size=32) }}
+                </p>
+                <p>
+                    {{ contact_form.email.label }}<br>
+                    {{ contact_form.email(size=32) }}
+                </p>
+                <p>
+                    {{ contact_form.phone.label }}<br>
+                    {{ contact_form.phone(size=32) }}
+                </p>
+                <input type="submit" value="next">
+            </form>
+{% endblock %}

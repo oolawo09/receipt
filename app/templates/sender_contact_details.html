@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+            <h1>{{user}}</h1>
+            <form action="{{url_for('show_recipient_contact_form')}}" method="POST" novalidate>
+                {{ contact_form.hidden_tag() }}
+                <p>
+                    {{ contact_form.name.label }}<br>
+                    {{ contact_form.name(size=32) }}<br>
+                    {% for error in contact_form.name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ contact_form.address.label }}<br>
+                    {{ contact_form.address(size=32) }}<br>
+                    {% for error in contact_form.address.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ contact_form.email.label }}<br>
+                    {{ contact_form.email(size=32) }}<br>
+                    {% for error in contact_form.email.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ contact_form.phone.label }}<br>
+                    {{ contact_form.phone(size=32) }}<br>
+                    {% for error in contact_form.phone.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <input type="submit" value="next">
+            </form>
+    
+{% endblock %}

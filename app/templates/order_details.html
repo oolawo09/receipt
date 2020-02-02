@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content%}
+            <h1>Order Details</h1>
+            <form action="" method="POST" novalidate>
+                <p>
+                    {{ order_form.number.label }}<br>
+                    {{ order_form.number(size=32) }}<br>
+                    {% for error in order_form.number.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+
+                {{ order_form.hidden_tag() }}
+                <input type="submit" value="next">
+            </form>
+{% endblock %}
