@@ -1,17 +1,25 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, \
-    FormField, DateField, TextAreaField
+    FormField, TextAreaField, FieldList, Form, \
+        SubmitField
 from wtforms.validators import DataRequired
 
 
-class LineItemForm(FlaskForm):
-    description = StringField('Description', validators=[DataRequired()])
+class LineItemForm(Form):
     price = IntegerField('Price', validators=[DataRequired()])
     quantity = IntegerField('Quantity', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
 
 
 class ReceiptForm(FlaskForm):
     sender = StringField('Sender', validators=[DataRequired()])
     recipient = StringField('Recipient', validators=[DataRequired()])
-    items = FormField(LineItemForm)
+    items = FieldList(FormField(LineItemForm),
+                      min_entries=0,
+                      max_entries=20)
     notes = TextAreaField('Notes')
+
+
+class PreviewForm(FlaskForm):
+    download = SubmitField(label="download")
+    send_via_whatsapp = SubmitField(label="send via whatsapp")
