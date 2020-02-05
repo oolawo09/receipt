@@ -6,6 +6,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
 from flask_login import LoginManager
 from logging.handlers import RotatingFileHandler
+from flask_mail import Mail
 import os
 
 
@@ -16,6 +17,7 @@ migrate = Migrate(app, db)
 CsrfProtect(app)
 login = LoginManager(app)
 login.login_view = 'login'
+mail = Mail(app)
 # bootstrap needs to be last for bootstraop styling to take effect
 bootstrap = Bootstrap(app)
 

@@ -1,7 +1,9 @@
 from flask import url_for, render_template, redirect, request, \
     flash
 from app import app, db
-from app.forms import ReceiptForm, PreviewForm, LoginForm, RegistrationForm
+from app.forms import ReceiptForm, PreviewForm, LoginForm, \
+    RegistrationForm, ResetPasswordRequestForm
+from app.email import send_password_reset_email
 from app.models import User, Receipt, Item
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -115,3 +117,17 @@ def user(username):
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Reset Password', form=form)
