@@ -18,4 +18,4 @@ login.login_view = 'login'
 bootstrap = Bootstrap(app)
 
 
-from app import routes  # noqa: E402 F401
+from app import routes, models, errors  # noqa: E402 F401
