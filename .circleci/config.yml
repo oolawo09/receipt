@@ -31,7 +31,6 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            flake8 --exclude=venv*,migrations* --statistics
             pytest -v --cov=calculator
       - deploy:
           name: deploy develop branch to heroku
