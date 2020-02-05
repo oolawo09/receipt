@@ -25,7 +25,6 @@ def index():
             receipt.items.append(new_item)
 
         if current_user.is_authenticated:
-            import pdb; pdb.set_trace()
             user = User.query.get(current_user.id)
             user.receipts.append(receipt)
             db.session.add(user)
@@ -100,8 +99,16 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    receipts = User.query.get(user.id).receipts
-    return render_template('user.html', user=user, receipts=receipts)
+    page = request.args.get('page', 1, type=int)
+    receipts = user.receipts.order_by(Receipt.id).paginate(
+        page, app.config['RECEIPTS_PER_PAGE'], False
+    )
+    next_url = url_for('user', username=user.username, page=receipts.next_num) \
+        if receipts.has_next else None
+    prev_url = url_for('user', username=user.username, page=receipts.prev_num) \
+        if receipts.has_prev else None
+    return render_template('user.html', user=user, receipts=receipts.items,
+                            next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/logout')
