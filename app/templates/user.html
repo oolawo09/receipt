@@ -2,4 +2,13 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block app_content%}
     <h1>User: {{ user.username }}</h1>
+    {% for receipt in receipts%} 
+    <div>
+        <h3> Receipt - {{receipt.id}}</h3>
+        sender: {{receipt.sender}}<br>
+        recipient: {{receipt.recipient}}<br>
+        items: {{receipt.items}}<br>
+        notes: {{receipt.notes}}<br>
+    </div>
+    {% endfor %}
 {% endblock %}

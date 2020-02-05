@@ -16,9 +16,19 @@ def index():
         receipt = Receipt()
         db.session.add(receipt)
 
+        receipt.notes = form.notes.data
+        receipt.recipient = form.recipient.data
+        receipt.sender = form.sender.data
+
         for item in form.items.data:
             new_item = Item(**item)
             receipt.items.append(new_item)
+
+        if current_user.is_authenticated:
+            import pdb; pdb.set_trace()
+            user = User.query.get(current_user.id)
+            user.receipts.append(receipt)
+            db.session.add(user)
 
         db.session.commit()
 
@@ -31,7 +41,6 @@ def index():
 def preview():
     form = PreviewForm()
     if form.validate_on_submit(): 
-        import pdb; pdb.set_trace()
         if form.download.data:
             return redirect(url_for('download'), code=200)
         if form.send_via_whatsapp.data:
@@ -91,8 +100,8 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    
-    return render_template('user.html', user=user, posts=posts)
+    receipts = User.query.get(user.id).receipts
+    return render_template('user.html', user=user, receipts=receipts)
 
 
 @app.route('/logout')
