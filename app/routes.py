@@ -1,5 +1,5 @@
 from flask import url_for, render_template, redirect, request, \
-    flash
+    flash, session, make_response
 from app import app, db
 from app.forms import ReceiptForm, PreviewForm, LoginForm, \
     RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
@@ -7,6 +7,29 @@ from app.email import send_password_reset_email
 from app.models import User, Receipt, Item
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+import pdfkit
+
+
+def add_receipt_to_session(receipt_form):
+    """
+        :param receipt_form: A wtf_form instance
+    """
+    session['receipt_notes'] = receipt_form.notes.data
+    session['receipt_recipient'] = receipt_form.recipient.data
+    session['receipt_sender'] = receipt_form.sender.data
+    session['receipt_items'] = receipt_form.items.data
+
+
+def get_receipt_from_session():
+    """
+        :return receipt_form: A wtf_form instance
+    """
+    receipt = ReceiptForm()
+    receipt.notes = session['receipt_notes']
+    receipt.recipient = session['receipt_recipient']
+    receipt.sender = session['receipt_sender']
+    receipt.items = session['receipt_items']
+    return receipt
 
 
 @app.route('/', methods=['get', 'post'])
@@ -15,22 +38,18 @@ def index():
     form = ReceiptForm()
 
     if form.validate_on_submit():
-        receipt = Receipt()
+        add_receipt_to_session(form)
+
+        receipt = Receipt(sender=form.sender.data,
+                          recipient=form.recipient.data,
+                          notes=form.notes.data, items=form.items.data)
         db.session.add(receipt)
 
-        receipt.notes = form.notes.data
-        receipt.recipient = form.recipient.data
-        receipt.sender = form.sender.data
-
-        for item in form.items.data:
-            new_item = Item(**item)
-            receipt.items.append(new_item)
-
         if current_user.is_authenticated:
-            user = User.query.get(current_user.id)
+            user = User.query.get(current_user.id) 
             user.receipts.append(receipt)
             db.session.add(user)
-
+        
         db.session.commit()
 
         return redirect(url_for('preview'), code=200)
@@ -41,12 +60,20 @@ def index():
 @app.route('/preview', methods=['get', 'post'])
 def preview():
     form = PreviewForm()
+    receipt = get_receipt_from_session()
+    
+
     if form.validate_on_submit(): 
         if form.download.data:
-            return redirect(url_for('download'), code=200)
+            rendered = render_template('actual_preview.html', form=form, receipt=receipt)
+            pdf = pdfkit.from_string(rendered, False)
+            response = make_response(pdf)
+            response.headers['Content-Type'] = "application/pdf"
+            response.headers['Content-Disposition'] = 'attachment; filename=output.pdf'
+            return response
         if form.send_via_whatsapp.data:
             pass
-    return render_template('preview.html', form=form)
+    return render_template('preview.html', form=form, receipt=receipt)
         
 
 @app.route('/download', methods=['get', 'post'])

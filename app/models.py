@@ -5,6 +5,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import app, db, login
+from flask import session
 
 
 @login.user_loader
@@ -54,8 +55,22 @@ class Receipt(db.Model):
     items = db.relationship('Item', backref='receipt', lazy='dynamic',
                                  primaryjoin="Receipt.id == Item.receipt_id")
 
+    def add_receipt_to_session(receipt_form):
+        session['receipt_notes'] = form.notes.data
+        session['receipt_recipient'] = form.recipient.data
+        session['receipt_sender'] = form.sender.data
+
     def __repr__(self):
         return '<Receipt {}>'.format(self.notes)
+    
+    def __init__(self, sender, recipient, notes, items):
+        self.sender = sender
+        self.recipient = recipient
+        self.notes = notes
+
+        for item in items:
+            new_item = Item(**item)
+            self.items.append(new_item)
 
 
 class Item(db.Model):
@@ -65,6 +80,12 @@ class Item(db.Model):
     description = db.Column(db.String(64))
     quantity = db.Column(db.Integer)
     receipt_id = db.Column(db.Integer, db.ForeignKey('receipt.id'))
+
+    def serialize(self):
+        return {"id": self.id,
+                "price": self.price,
+                "description": self.description,
+                "quantity": self.quantity}
 
     def __repr__(self):
         return '<Item {}>'.format(self.description)
