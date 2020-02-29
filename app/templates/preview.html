@@ -2,22 +2,22 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block app_content%}
             <h1>Preview</h1>
-                sender: {{receipt.sender}} <br>
-                recipient: {{receipt.recipient}} <br>
-                notes: {{receipt.notes}} <br>
+                sender: {{data.receipt.sender}} <br>
+                recipient: {{data.receipt.recipient}} <br>
+                notes: {{data.receipt.notes}} <br>
                 items:
-                {% for item in receipt.items %}
+                {% for item in data.receipt.items %}
                     {{item.price}}
                     {{item.description}}
                     {{item.quantity}} <br>
                 {% endfor %}
             <br>
             <form method="post" action="{{ url_for('preview') }}">
-                    {{ form.hidden_tag() }}
-                    {{ form.csrf_token() }}
-                    {{ form.download }}
+                    {{ data.form.hidden_tag() }}
+                    {{ data.form.csrf_token() }}
+                    {{ data.form.download }}
                     {% if current_user.is_authenticated %}
-                    {{ form.send_via_whatsapp }}  
+                    {{ data.form.send_via_whatsapp }}  
                     {% endif %}
             </form>
             

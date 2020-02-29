@@ -52,7 +52,7 @@ def index():
         
         db.session.commit()
 
-        return redirect(url_for('preview'), code=200)
+        return redirect(url_for('preview'), code=302)
     return render_template('receipt.html',
                            form=form)
 
@@ -62,10 +62,14 @@ def preview():
     form = PreviewForm()
     receipt = get_receipt_from_session()
     
+    data = {
+        "form": form, 
+        "receipt": receipt
+    }
 
     if form.validate_on_submit(): 
         if form.download.data:
-            rendered = render_template('actual_preview.html', form=form, receipt=receipt)
+            rendered = render_template('actual_preview.html', data=data)
             pdf = pdfkit.from_string(rendered, False)
             response = make_response(pdf)
             response.headers['Content-Type'] = "application/pdf"
@@ -73,7 +77,8 @@ def preview():
             return response
         if form.send_via_whatsapp.data:
             pass
-    return render_template('preview.html', form=form, receipt=receipt)
+ 
+    return render_template('preview.html', data=data)
         
 
 @app.route('/download', methods=['get', 'post'])
