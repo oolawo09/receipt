@@ -1,173 +1,223 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-{% block app_content %}
-{% if current_user.is_authenticated%}
-    <h1>Hi, {{ current_user.username }}!</h1>
-{% endif %}
+{% block scripts %}
+{{ super() }}
+
 {# Import JQuery #}
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-                <script>
-                    /**
-                    * Adjust indices of form fields when removing line_items
-                    */
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    /**
+    * Adjust indices of form fields when removing line_items
+    */
 
-                    function adjustIndices(removedIndex){ 
-                        var $forms = $('.subform');
+    function adjustIndices(removedIndex){ 
+        var $forms = $('.subform');
 
-                        $forms.each(function(i){ 
-                            var $form = $(this); 
-                            var index = parseInt($form.data('index')); 
-                            var newIndex = index - 1;
+        $forms.each(function(i){ 
+            var $form = $(this); 
+            var index = parseInt($form.data('index')); 
+            var newIndex = index - 1;
 
-                            if (index < removedIndex) {
-                                // Skip
-                                return true;
-                            }
+            if (index < removedIndex) {
+                // Skip
+                return true;
+            }
 
-                            // Change ID in form itself
-                            $form.attr('id', $form.attr('id').replace(index, newIndex));
-                            $form.data('index', newIndex);
+            // Change ID in form itself
+            $form.attr('id', $form.attr('id').replace(index, newIndex));
+            $form.data('index', newIndex);
 
-                            // Change IDs in form inputs
-                            $form.find('input').each(function(j) {
-                                var $item = $(this);
-                                $item.attr('id', $item.attr('id').replace(index, newIndex));
-                                $item.attr('name', $item.attr('name').replace(index, newIndex));
-                            });
-                        });
-                    }
+            // Change IDs in form inputs
+            $form.find('input').each(function(j) {
+                var $item = $(this);
+                $item.attr('id', $item.attr('id').replace(index, newIndex));
+                $item.attr('name', $item.attr('name').replace(index, newIndex));
+            });
+        });
+    }
 
-                    /**
-                    * Remove a form.
-                    */
+    /**
+    * Remove a form.
+    */
 
-                    function removeForm() {
-                        var $removedForm = $(this).closest('.subform');
-                        var removedIndex = parseInt($removedForm.data('index'));
+    function removeForm() {
+        var $removedForm = $(this).closest('.subform');
+        var removedIndex = parseInt($removedForm.data('index'));
 
-                        $removedForm.remove();
+        $removedForm.remove();
 
-                        // Update indices
-                        adjustIndices(removedIndex);
-                    }
+        // Update indices
+        adjustIndices(removedIndex);
+    }
 
-                    /**
-                    * Add a new form.
-                    */
-                    function addForm() {
-                        var $templateForm = $('#items-_-form');
+    /**
+    * Add a new form.
+    */
+    function addForm() {
+        var $templateForm = $('#items-_-form');
 
-                        if (!$templateForm) {
-                            console.log('[ERROR] Cannot find template');
-                            return;
-                        }
+        if (!$templateForm) {
+            console.log('[ERROR] Cannot find template');
+            return;
+        }
 
-                        // Get Last index
-                        var $lastForm = $('.subform').last();
+        // Get Last index
+        var $lastForm = $('.subform').last();
 
-                        var newIndex = 0;
+        var newIndex = 0;
 
-                        if ($lastForm.length > 0) {
-                            newIndex = parseInt($lastForm.data('index')) + 1;
-                        }
+        if ($lastForm.length > 0) {
+            newIndex = parseInt($lastForm.data('index')) + 1;
+        }
 
-                        // Maximum of 20 subforms
-                        if (newIndex > 20) {
-                            console.log('[WARNING] Reached maximum number of elements');
-                            return;
-                        }
+        // Maximum of 20 subforms
+        if (newIndex > 20) {
+            console.log('[WARNING] Reached maximum number of elements');
+            return;
+        }
 
-                        // Add elements
-                        var $newForm = $templateForm.clone();
+        // Add elements
+        var $newForm = $templateForm.clone();
 
-                        $newForm.attr('id', $newForm.attr('id').replace('_', newIndex));
-                        $newForm.data('index', newIndex);
+        $newForm.attr('id', $newForm.attr('id').replace('_', newIndex));
+        $newForm.data('index', newIndex);
 
-                        $newForm.find('input').each(function(idx) {
-                            var $item = $(this);
+        $newForm.find('input').each(function(idx) {
+            var $item = $(this);
 
-                            $item.attr('id', $item.attr('id').replace('_', newIndex));
-                            $item.attr('name', $item.attr('name').replace('_', newIndex));
-                        });
+            $item.attr('id', $item.attr('id').replace('_', newIndex));
+            $item.attr('name', $item.attr('name').replace('_', newIndex));
+        });
 
-                        // Append
-                        $('#subforms-container').append($newForm);
-                        $newForm.addClass('subform');
-                        $newForm.removeClass('is-hidden');
+        // Append
+        $('#subforms-container').append($newForm);
+        $newForm.addClass('subform');
+        $newForm.removeClass('is-hidden');
 
-                        $newForm.find('.remove').click(removeForm);
-                    }
+        $newForm.find('.remove').click(removeForm);
+    }
 
 
-                    $(document).ready(function() {
-                        removeForm();
-                        $('#add').click(addForm);
-                        $('.remove').click(removeForm);
-                    });
-                </script>
+    $(document).ready(function() {
+        removeForm();
+        $('#add').click(addForm);
+        $('.remove').click(removeForm);
+    });
+</script>
+{% endblock %}
 
-                <style>
+{% block styles %}
+{{ super() }}
+            <style>
                     .is-hidden {
                         display: none;
                     }
-                </style>
+   
+    h2 {
+    font-size: 18px;
+    margin: 0 0 15px;
+}
+.receipt-form {
+    width: 340px;
+    margin: 30px auto;
+}
+.receipt-form form {        
+    background: #f7f7f7;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+}    
+.form-control, .btn {
+    height: 36px;
+    border-radius: 2px;
+}
+.btn {        
+    font-size: 15px;
+    font-weight: bold;
+}
+.remember-me {
+    margin: 8px 0 0 12px;
+}
+</style>
 
-                <form class="form form-horizontal" action="{{url_for('index')}}" method="POST" novalidate>
-                    {{ form.hidden_tag() }}
-                    {{ form.csrf_token() }}
-                    <div>
-                        {{ form.sender.label }}<br>
-                        {{ form.sender(size=32) }}<br>
-                        {% for error in form.sender.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
+
+
+
+
+
+
+{% endblock %}
+
+{% block app_content %}
+
+                <div>
+                    
+                    <div class="page-header">
+                        {% if current_user.is_authenticated%}
+                            <h1 id="timeline">Hello, {{ current_user.username }}!</h1>
+                            <p>Create a receipt below!</p>
+                        {% else %}
+                            <h1 id="timeline">Hello!</h1>
+                            <p>Create a receipt below!</p>
+                        {% endif %}
                     </div>
-                    <div>
-                        {{ form.recipient.label }}<br>
-                        {{ form.recipient(size=32) }}<br>
-                        {% for error in form.recipient.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.items.label }}<br>
-                        <a id="add" href="#">Add Item</a> 
-                        <div id="subforms-container">
-                            {% for item in form.items %}
-                                <div id="item-{{ item.index0 }}-form" class="subform" data-index="{{  item.index0 }}"> 
-                                    {{item}}
-                                    <a class="remove" href="#">Remove</a>
-                                </div>
-                            {% endfor %}
+
+                    <form class="receipt-form" action="{{url_for('index')}}" method="POST" novalidate>
+                        {{ form.csrf_token() }}
+                        <div class="form-group">
+                            {{ wtf.form_field(form.sender) }}
                         </div>
-                        {% for error in form.items.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
+                        <div class="form-group">
+                            {{ wtf.form_field(form.recipient) }}
+                        </div>
                         
-                    </div>
-                    <div>
-                        {{ form.notes.label }}<br>
-                        {{ form.notes(size=32) }}<br>
-                        {% for error in form.notes.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </div>
+                        <div class="form-group" id="subforms-container">
+                            {{ form.items.label }}<br>
+                            <div class="col">
+                                <a id="add" href="#">Add Item</a>
+                            </div>
+                            
+                                {% for item in form.items %}
+                                    <div id="item-{{ item.index0 }}-form" class="subform col" data-index="{{  item.index0 }}"> 
+                                        {{ wtf.form_field(item)}}
+                                        <a class="remove" href="#">Remove</a>
+                                    </div>
+                                {% endfor %}
+                                                 
+                        </div>
+                        <div class="form-group">
+                            {{ wtf.form_field(form.notes) }}
+                        </div>
 
-                    <input type="submit" value="next">
-                </form>
+                        <button type="submit" class="btn btn-success" >preview</button>
+                    </form>
+                </div>
+
+                
 
             {# Form template #}
-            <div id="items-_-form" class="is-hidden" data-index="_">
-                <label for="items-_-price">Price</label>
-                <input id="items-_-price" name="items-_-price" type="text" value="">
+            <div id="items-_-form" class="is-hidden form-row align-items-center" data-index="_">
+                <div class="col-auto">
+                    <label class="sr-only" for="items-_-price">Price</label>
+                    <input class="form-control mb-2" id="items-_-price" name="items-_-price" type="text" value="">    
+                </div>
+                
+                <div class="col-auto">
+                    <label class="sr-only" for="items-_-quantity">Quantity</label>
+                    <input class="form-control mb-2" id="items-_-quantity" name="items-_-quantity" type="text">   
+                </div>
 
-                <label for="items-_-quantity">Quantity</label>
-                <input id="items-_-quantity" name="items-_-quantity" type="text">
+                <div class="col-auto"> 
+                    <label class="sr-only" for="items-_-description">Description</label>
+                    <input class="form-control mb-2" id="items-_-description" name="items-_-description" type="text">
+                </div>
 
-                <label for="items-_-description">Description</label>
-                <input id="items-_-description" name="items-_-description" type="text">
-                <a class="remove" href="#">Remove</a>
+                <div class="col-auto"> 
+                    <a class="remove" href="#">Remove</a>
+                </div>
+  
+                
+               
             </div>
     
 {% endblock %}

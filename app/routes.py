@@ -2,7 +2,7 @@ from flask import url_for, render_template, redirect, request, \
     flash, session, make_response
 from app import app, db
 from app.forms import ReceiptForm, PreviewForm, LoginForm, \
-    RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
+    RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm, LineItemForm
 from app.email import send_password_reset_email
 from app.models import User, Receipt, Item
 from flask_login import current_user, login_user, logout_user, login_required
@@ -36,6 +36,7 @@ def get_receipt_from_session():
 @app.route('/index', methods=['get', 'post'])
 def index():
     form = ReceiptForm()
+    lif = LineItemForm()
 
     if form.validate_on_submit():
         add_receipt_to_session(form)
@@ -54,7 +55,7 @@ def index():
 
         return redirect(url_for('preview'), code=302)
     return render_template('receipt.html',
-                           form=form)
+                           form=form, lif=lif)
 
 
 @app.route('/preview', methods=['get', 'post'])
