@@ -23,7 +23,11 @@ mail = Mail(app)
 bootstrap = Bootstrap(app)
 
 
-from app import routes, models, errors  # noqa: E402 F401
+from app import routes, models  # noqa: E402 F401
+
+from app.errors import bp as errors_bp  # noqa: E402 F401
+app.register_blueprint(errors_bp)
+
 
 if not app.debug:
     # ...
