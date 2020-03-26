@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content%}
+            <h1>Preview</h1>
+                sender: {{data.receipt.sender}} <br>
+                recipient: {{data.receipt.recipient}} <br>
+                notes: {{data.receipt.notes}} <br>
+                items:
+                {% for item in data.receipt.items %}
+                    {{item.price}}
+                    {{item.description}}
+                    {{item.quantity}} <br>
+                {% endfor %}
+            <br>
+            <form method="post" action="{{ url_for('main.preview') }}">
+                    {{ data.form.hidden_tag() }}
+                    {{ data.form.csrf_token() }}
+                    {{ data.form.download }}
+                    {% if current_user.is_authenticated %}
+                    {{ data.form.send_via_whatsapp }}  
+                    {% endif %}
+            </form>
+            
+{% endblock %}

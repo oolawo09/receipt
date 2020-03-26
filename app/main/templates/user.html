@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block styles%}
+{{super()}}
+<style>
+</style>
+{% endblock %}
+{% block app_content%}
+<div class="container"> 
+    <div class="page-header">
+        <h1 id="timeline">Hello, {{ user.username }}!</h1>
+        <p>Here are the receipts you've sent so far:</p>
+    </div>
+    <ul class="timeline">
+        {% for receipt in receipts%} 
+        <li>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4 class="timeline-title">Receipt - {{receipt.id}}</h4>
+              </div>
+              <div class="timeline-body">
+                <p>sender: {{receipt.sender}}<br>
+                    recipient: {{receipt.recipient}}<br>
+                    {% for item in receipt.items.all() %}
+                        description: {{item.description}}<br>
+                        price: {{item.price}}<br>
+                        quantity: {{item.quantity}}<br>
+                    {% endfor %} 
+                    notes: {{receipt.notes}}<br></p>
+                    <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> 11 hours ago</small></p>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+    </ul>
+    
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Older receipts
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Newer receipts <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div> 
+{% endblock %}

@@ -1,0 +1,10 @@
+<h1>Preview</h1>
+            sender: {{data.receipt.sender}} <br>
+            recipient: {{data.receipt.recipient}} <br>
+            notes: {{data.receipt.notes}} <br>
+            items:
+            {% for item in data.receipt.items %}
+                {{item.price}}
+                {{item.description}}
+                {{item.quantity}} <br>
+            {% endfor %}
