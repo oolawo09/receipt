@@ -28,6 +28,9 @@ from app import routes, models  # noqa: E402 F401
 from app.errors import bp as errors_bp  # noqa: E402 F401
 app.register_blueprint(errors_bp)
 
+from app.auth import bp as auth_bp
+app.register_blueprint(auth_bp)
+
 
 if not app.debug:
     # ...
